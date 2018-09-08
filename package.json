@@ -8,9 +8,11 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --prod --build-optimizer",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "ng test --no-watch",
+    "test:e2e": "ng e2e",
+    "lint": "npm run lint:ng",
+    "lint:ng": "ng lint"
   },
   "repository": {
     "type": "git",
