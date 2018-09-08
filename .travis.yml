@@ -1,0 +1,41 @@
+language: node_js
+node_js:
+  - 10
+
+os:
+  - linux
+
+cache:
+  directories:
+    - node_modules
+
+script:
+  - npm version
+  - ng --version
+  - npm test
+
+stages:
+  - test
+  - name: deploy
+    if: (type = push) AND branch =~ ^(master|v\d+\.\d+)$
+
+jobs:
+  include:
+
+    - stage: deploy
+      script:
+        - npm run build:prod
+        - echo 'blinder.surge.sh' | tee dist/blinder-angular/CNAME
+
+      deploy:
+        provider: surge
+        project: dist/blinder-angular/
+        domain: blinder.surge.sh
+        skip_cleanup: true
+        on:
+          all_branches: true
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
