@@ -9,7 +9,11 @@ exports.config = {
     './src/**/*.e2e-spec.ts'
   ],
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    chromeOptions: {
+      args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage'],
+      binary: require('puppeteer').executablePath(),
+    },
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
