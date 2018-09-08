@@ -9,11 +9,6 @@ cache:
   directories:
     - node_modules
 
-script:
-  - npm version
-  - ng --version
-  - npm test
-
 stages:
   - test
   - name: deploy
@@ -21,19 +16,24 @@ stages:
 
 jobs:
   include:
+  - stage: test
+    script:
+    - npm version
+    - ng --version
+    - npm test
 
-    - stage: deploy
-      script:
-        - npm run build:prod
-        - echo 'blinder.surge.sh' | tee dist/blinder-angular/CNAME
+  - stage: deploy
+    script:
+    - npm run build:prod
+    - echo 'blinder.surge.sh' | tee dist/blinder-angular/CNAME
 
-      deploy:
-        provider: surge
-        project: dist/blinder-angular/
-        domain: blinder.surge.sh
-        skip_cleanup: true
-        on:
-          all_branches: true
+    deploy:
+      provider: surge
+      project: dist/blinder-angular/
+      domain: blinder.surge.sh
+      skip_cleanup: true
+      on:
+        all_branches: true
 
 notifications:
   email:
