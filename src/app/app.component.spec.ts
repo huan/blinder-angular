@@ -8,27 +8,4 @@ describe('AppComponent', () => {
       ],
     }).compileComponents()
   }))
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent)
-    const app = fixture.debugElement.componentInstance
-    expect(app).toBeTruthy()
-  }))
-  it(`should have as title '脸盲助手'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent)
-    const app = fixture.debugElement.componentInstance
-    expect(app.title).toContain('脸盲助手')
-  }))
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent)
-    fixture.detectChanges()
-    const compiled = fixture.debugElement.nativeElement
-    expect(compiled.querySelector('h1').textContent).toContain('欢迎使用')
-  }))
-
-  it('should render qrcode', async(() => {
-    const fixture = TestBed.createComponent(AppComponent)
-    fixture.detectChanges()
-    const compiled = fixture.debugElement.nativeElement
-    expect(compiled.querySelector('img').src).toContain('/assets/qrcode.jpg')
-  }))
 })
