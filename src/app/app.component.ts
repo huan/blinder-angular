@@ -8,5 +8,5 @@ import { VERSION } from '../config'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Blinder v' + VERSION
+  title = '脸盲助手 v' + VERSION
 }
