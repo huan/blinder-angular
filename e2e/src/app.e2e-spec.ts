@@ -9,6 +9,6 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo()
-    expect(page.getParagraphText()).toContain('Welcome to Blinder')
+    expect(page.getParagraphText()).toContain('欢迎使用脸盲助手')
   })
 })
