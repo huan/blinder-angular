@@ -9,8 +9,8 @@
 
 ## AUTHOR
 
-Weipeng KUANG \<\> (https://github.com/creatorkuang)
-Huan LI \<zixia@zixia.net\> (https://linkedin.com/in/zixia)
+- Weipeng KUANG \<\> (https://github.com/creatorkuang)
+- Huan LI \<zixia@zixia.net\> (https://linkedin.com/in/zixia)
 
 ## COPYRIGHT & LICENSE
 
