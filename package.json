@@ -1,6 +1,6 @@
 {
   "name": "blinder-angular",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Blinder Angular Wechat SPA",
   "main": "index.js",
   "scripts": {
