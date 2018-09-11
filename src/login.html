@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>脸盲助手-登录</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+  <div class="" style="text-align: center;">
+    <img src="/assets/logo.jpeg" alt="logo" style="width: 200px; margin-top: 100px;" />
+    <div class="mbmd mtlg c4" style="font-size: 26px">请使用微信扫码完成登录</div>
+  </div>
+  <div id="qrImgBox" style="display:none;text-align:center;color:#666">
+    <img src="" id="qrImg" alt="qrcode" width="250" height="250" id="qrImg" />
+  </div>
+
+  <script src="/assets/qr.min.js"></script>
+  <script>
+    var expiresDays = '7';
+    var apiHost = 'http://blinder-api.hui51.cn';
+    var isOpenQrcode = true;
+    var webScanExpired = 30;
+    var banRedirect = false;
+    var jz = {
+      appId: "wxd78c7c57ee692b72",
+      getParameterByName: function (name) {
+        var url = window.location.href;
+        name = name.replace(/[[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      },
+      isWeChatBroswer: function () {
+        var ua = navigator.userAgent.toLowerCase();
+        return ua.match(/MicroMessenger/i) && ua.match(/MicroMessenger/i)[0] === "micromessenger"
+      },
+      isTokenExpired: function (day) {
+        var lastTime = parseInt(window.localStorage.authTime, 10) || 0;
+        var now = new Date().getTime();
+        var timeLen = day * 24 * 3600 * 1000;
+        return now - lastTime > timeLencod
+      }
+    }
+    function getQrcodeUrl(value) {
+      return window.qr.toDataURL({
+        size: 10,
+        value: value
+      });
+    }
+    function saveToLocal(name, val) {
+      window.localStorage.setItem(name, val)
+    }
+    function getFromLocal(name) {
+      return window.localStorage[name]
+    }
+    function saveUser(data) {
+      saveToLocal("token", data.token);
+      saveToLocal("authTime", new Date().getTime());
+      saveToLocal('token', data.token);
+      // setCookie('token', data.token, expiresDays);
+      // if (onOk && typeof onOk === 'function') {
+      //   onOk(data);
+      // }
+      var wrd = window.localStorage["wrd"] || '/';
+      if (wrd.indexOf('http') > -1) {
+        window.location.href = wrd
+      } else {
+        window.location.href = window.location.protocol + "//" + window.location.hostname + wrd;
+      }
+    }
+
+    function sendRequest(url, oj, cb) {
+      // let qoj = oj||{method:"GET"};
+      fetch(apiHost ? apiHost + url : url, oj || {})
+        .then((response) => {
+          return response.json()
+        }).then((json) => {
+          cb(json);
+        }).catch((err) => {
+          console.log('wechat login request', url, err);
+          // if (onErr && typeof onErr === 'function') {
+          //   onErr(err)
+          // }
+        })
+    }
+
+    function loginWechat(code) {
+      sendRequest("/api/weixin/oauth", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          code: code
+        })
+      }, (json) => {
+        if (json.statusCode === 200) {
+          saveUser(json.data)
+        }
+      })
+    }
+    var internalId;
+    function webLogin(sceneId) {
+      sendRequest("/api/weixin/getUserWithSceneId/" + sceneId, null, (json) => {
+        if (json.statusCode === 200) {
+          saveUser(json.data)
+          clearInterval(internalId);
+        }
+      })
+    }
+
+    function startWebwechatLogin() {
+      sendRequest("/api/weixin/qrcodeLogin", { method: 'POST' }, (json) => {
+        if (json.statusCode === 200) {
+          console.log("get login data", json.data);
+          var url = json.data.url;
+          var sceneId = json.data.sceneId;
+          var qrurl = getQrcodeUrl(url)
+          // $("#qrImgBox").show();
+          // $("img#qrImg")[0].src = qrurl;
+          // self.setState({ url: qrurl })
+          document.getElementById('qrImgBox').style.display = "block";
+          document.getElementById('qrImg').setAttribute('src', qrurl);
+          setTimeout(function () {
+            internalId = window.setInterval(function () {
+              webLogin(sceneId)
+            }, 2000)
+          }, 5000);
+          window.setTimeout(function () {
+            clearInterval(internalId)
+          }, webScanExpired * 1000)
+        }
+      })
+    }
+    var path = jz.getParameterByName("redirect") || getFromLocal("wrd") || '/';
+    saveToLocal("wrd", path + window.location.hash);
+    if (getFromLocal("token")) {
+      if (!banRedirect) {
+        window.location.href = window.location.protocol + "//" + window.location.hostname + path + window.location.hash
+      }
+    } else {
+      if (jz.isWeChatBroswer()) {
+        var code = jz.getParameterByName("code");
+        if (code) {
+          loginWechat(code)
+        } else {
+          //var redirect_uri = location.protocol + "//" + location.hostname + "/wechatAuth.html";
+
+          var authUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + jz.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_userinfo&state=rd#wechat_redirect";
+          window.location.href = authUrl
+        }
+      } else {
+        if (isOpenQrcode) {
+          if (!window.qr) {
+            jz.loadJs("/qr.min.js", function () {
+              startWebwechatLogin()
+            })
+          } else {
+            startWebwechatLogin()
+          }
+        }
+      }
+    }
+
+
+
+  </script>
+</body>
+
+</html>
