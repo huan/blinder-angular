@@ -84,7 +84,7 @@ export class PhotoMarkComponent implements OnInit, OnDestroy {
   }
   sendPhoto() {
     const { photo } = this;
-    if (!photo.me.isFollowWechat) {
+    if (photo.me.isFollowWechat) {
       this.photoService.markPhoto(photo._id, false).subscribe(result => {
         if (result.statusCode === 200) {
           alert('发送成功，请到脸盲助手服务号中查看：）')
