@@ -59,8 +59,8 @@ describe('Util: photomark', () => {
       }
     }
 
-    const getMatch = (oj) => {
-      return filterSubmit(defaultForm, faceMap, oj).shouldUpdateArr[0]
+    const getMatch = (formOj) => {
+      return filterSubmit(defaultForm, faceMap, formOj).shouldUpdateArr[0]
     }
 
 

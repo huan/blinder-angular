@@ -23,11 +23,12 @@
   <script>
     var expiresDays = '7';
     var apiHost = 'http://blinder.hui51.cn';
+    var redirect_uri = 'http://blinder.hui51.cn/login.html';
     var isOpenQrcode = true;
     var webScanExpired = 30;
     var banRedirect = false;
     var jz = {
-      appId: "wxd78c7c57ee692b72",
+      appId: "wxb41532ec5bb06e9f",
       getParameterByName: function (name) {
         var url = window.location.href;
         name = name.replace(/[[\]]/g, '\\$&');
@@ -152,7 +153,7 @@
           loginWechat(code)
         } else {
           //var redirect_uri = location.protocol + "//" + location.hostname + "/wechatAuth.html";
-
+          
           var authUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + jz.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_userinfo&state=rd#wechat_redirect";
           window.location.href = authUrl
         }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { PhotoService } from '../photo.service';
+import {WeixinService} from '../weixin.service';
 import { ActivatedRoute } from '@angular/router';
 import { Photo } from '../photo';
 import {
@@ -35,20 +36,23 @@ export class PhotoMarkComponent implements OnInit, OnDestroy {
   currentScrollIdx = 0;
   constructor(
     private route: ActivatedRoute,
-    private photoService: PhotoService
+    private photoService: PhotoService,
+    private weixinService: WeixinService
   ) { }
 
   ngOnInit() {
-    this.getPhoto();
-    const height = window.innerHeight;
-    this.width = window.innerWidth;
-    this.height = height;
-    this.rootStyles.height = `${height}px`;
     if (!window.localStorage.getItem('token')) {
       const source = window.location.pathname + window.location.search
       const path = `${window.location.protocol}//${window.location.host}/login.html?redirect=${encodeURIComponent(source)}`;
       window.location.href = path;
     }
+    // init weixin
+    this.weixinService.initJSSDK().subscribe();
+    this.getPhoto();
+    const height = window.innerHeight;
+    this.width = window.innerWidth;
+    this.height = height;
+    this.rootStyles.height = `${height}px`;
   }
   ngOnDestroy() {
     if (this.rid) {
