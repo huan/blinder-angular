@@ -49,20 +49,28 @@ export class PhotoService {
   }
   // 关注扫码之前发送信息
   markPhoto(photoId: string, addTag: boolean) {
-    return this.http.post<any>(this.base + '/api/photo/' + photoId + '/mark', {addTag}, httpOptions).pipe(
+    return this.http.post<any>(this.base + '/api/photo/' + photoId + '/mark', { addTag }, httpOptions).pipe(
       tap(() => this.log(`mark photo ok`)),
       catchError(this.handleError<any>('markPhoto'))
     );
   }
-   /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T> (operation = 'operation', result?: T) {
+  /**
+  * Handle Http operation that failed.
+  * Let the app continue.
+  * @param operation - name of the operation that failed
+  * @param result - optional value to return as the observable result
+  */
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
+      if (error.status === 401) {
+        if (window.localStorage.getItem('token')) {
+          window.localStorage.removeItem('token');
+        }
+        const source = window.location.pathname + window.location.search
+        const path = `${window.location.protocol}//${window.location.host}/login.html?redirect=${encodeURIComponent(source)}`;
+        window.location.href = path;
+      }
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
 

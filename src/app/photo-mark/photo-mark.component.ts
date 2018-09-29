@@ -44,6 +44,11 @@ export class PhotoMarkComponent implements OnInit, OnDestroy {
     this.width = window.innerWidth;
     this.height = height;
     this.rootStyles.height = `${height}px`;
+    if (!window.localStorage.getItem('token')) {
+      const source = window.location.pathname + window.location.search
+      const path = `${window.location.protocol}//${window.location.host}/login.html?redirect=${encodeURIComponent(source)}`;
+      window.location.href = path;
+    }
   }
   ngOnDestroy() {
     if (this.rid) {

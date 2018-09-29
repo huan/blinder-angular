@@ -22,7 +22,7 @@
   <script src="/assets/qr.min.js"></script>
   <script>
     var expiresDays = '7';
-    var apiHost = 'http://blinder-api.hui51.cn';
+    var apiHost = 'http://blinder.hui51.cn';
     var isOpenQrcode = true;
     var webScanExpired = 30;
     var banRedirect = false;
@@ -72,7 +72,7 @@
       if (wrd.indexOf('http') > -1) {
         window.location.href = wrd
       } else {
-        window.location.href = window.location.protocol + "//" + window.location.hostname + wrd;
+        window.location.href = window.location.protocol + "//" + window.location.hostname + (window.location.port!==80?':'+window.location.port :'') + wrd;
       }
     }
 
