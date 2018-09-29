@@ -1,3 +1,74 @@
-<p>
-  photo-mark works!
-</p>
+<div *ngIf="!isLoad" class="loading">
+    数据加载中...
+</div>
+<div *ngIf="isLoad" [ngStyle]="rootStyles">
+    <div id="markBox" [style.max-height.px]="height-360">
+        <div *ngIf="isRenderCanvas" class="palg">图片合成中...</div>
+    </div>
+    <div id="faceHistoryBox">
+        <div id="faceHistory">
+            <div *ngFor="let item of faceHistorys" class="mbsm dt" [style.transform]="transformY">
+                <div class="dtc center" [style.width.px]="60">
+                    <img src="{{item.avatar}}" alt='头像' class='mrsm avatar' />
+                </div>
+                <div class="dtc vat">
+                    <span>{{item.username}}</span> 认出了<span class="faceName">{{item.name}}</span>
+                    <div class="time">
+                        {{item.updatedAt | date: "MM-dd HH:mm"}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- <div class="dt">
+                <div class="dtc" [style.width.px]="80">
+                    <div id="faceAvatar">
+                        <div class="scroll" [style.width.px]="faceAvatars.length*60">
+                            <img src="{{avatar}}" alt='头像' *ngFor="let avatar of faceAvatars" class='mrsm inline avatar'/>
+                        </div>
+                    </div>
+                </div>
+                <div class="dtc vat">
+                    
+                </div>
+            </div> -->
+    </div>
+    <div id="nameBox">
+
+        <div id="editForm">
+            <div *ngFor="let face of photo.faces" class="dt mbsm w">
+                <div class="dtc" style="width:80px;text-align:center;">
+                    <img src="{{face.imageData}}" class="avatar" />
+                </div>
+                <div class="dtc vam">
+                    <input [(ngModel)]="photoNameMap[face._id]" (focus)="focusFace(face)" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="foot">
+        <button (click)="toggleShare(true)">邀请朋友编辑</button>
+        <button class="flat" (click)="sendPhoto()">发送合成图</button>
+        <button class='primary' (click)="updatePhoto(photoNameMap)">更新信息</button>
+    </div>
+</div>
+<div *ngIf="showShare" id="shareBox" (click)="toggleShare(false)">
+    <img src='/assets/jiantou.png' alt='分享箭头' id="shareArrow" />
+    <div id="shareTxt">
+        点击右上角调出分享
+    </div>
+</div>
+
+<div *ngIf="showFollow" class="dialog">
+    <div class="dialog-body">
+        <div class="dialog-title">关注脸盲助手 <span class="close" (click)="toggleFollow(false)">x
+            </span></div>
+        <div class="dialog-content">
+            <img src='/assets/qrcode.jpg' alt="qrcode" class="w" />
+            <div class="mtsm center">
+                您需要关注服务号后才能给您发送图片，请长按识别二维码关注脸盲助手
+            </div>
+        </div>
+    </div>
+</div>

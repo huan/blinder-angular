@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>脸盲助手</title>
@@ -8,7 +9,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+
 <body>
   <app-root></app-root>
+  <script src="/assets/jweixin-1.2.0.js"></script>
+  <script>
+    function detectWeixinApi(callback) {
+      if (typeof window.WeixinJSBridge == 'undefined' || typeof window.WeixinJSBridge.invoke == 'undefined') {
+        setTimeout(function () {
+          detectWeixinApi(callback);
+        }, 200);
+      } else {
+        callback();
+      }
+    }
+    // if (window.location.search.indexOf('isDebug=1') > -1) {
+    //   window.isDebug = true;
+    //   // 加载remote script
+    //   var path = 'http://debug.hui51.cn/target/target-script-min.js#anonymous';
+    //   var ds = document.createElement('script');
+    //   ds.src = path;
+    //   document.documentElement.childNodes[0].appendChild(ds);
+    // }
+    var shareInit = function (oj, ok, cancel) {
+      if (!wx) return
+      detectWeixinApi(function () {
+        wx.onMenuShareAppMessage({
+          title: oj.title, // 分享标题
+          desc: oj.desc, // 分享描述
+          link: oj.link, // 分享链接
+          imgUrl: oj.imgUrl, // 分享图标
+          type: 'link', // 分享类型,music、video或link，不填默认为link
+          success: function () {
+            if (ok && typeof ok === 'function') {
+              ok()
+            }
+          },
+          cancel: function () {
+            if (cancel && typeof cancel === 'function') {
+              cancel()
+            }
+          }
+        }),
+          wx.onMenuShareTimeline({
+            title: oj.title, // 分享标题
+            link: oj.link, // 分享链接
+            imgUrl: oj.imgUrl, // 分享图标
+            success: function () {
+              if (ok && typeof ok === 'function') {
+                ok()
+              }
+            },
+            cancel: function () {
+              if (cancel && typeof cancel === 'function') {
+                cancel()
+              }
+            }
+          });
+      })
+    }
+    function isWeChatBroswer() {
+      var ua = navigator.userAgent.toLowerCase();
+      return ua.match(/MicroMessenger/i) && ua.match(/MicroMessenger/i)[0] === 'micromessenger';
+    }
+
+    window.setShare = function (oj, ok, cancel) {
+      if (!isWeChatBroswer) return
+      if (window.initWechat) {
+        shareInit(oj, ok, cancel)
+      } else {
+        if (wx) {
+          wx.ready(function () {
+            shareInit(oj, ok, cancel)
+            window.initWechat = true
+          })
+        }
+      }
+    }
+  </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-83803285-6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-83803285-6');
+  </script> -->
 </body>
+
 </html>
