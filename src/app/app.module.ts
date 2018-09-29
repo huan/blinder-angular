@@ -12,7 +12,7 @@ import { DownloadPhotoComponent } from './download-photo/download-photo.componen
 import { FormsModule } from '@angular/forms';
 // route
 
-const routes: Routes = [
+export const routes: Routes = [
    { path: 'photo/originDownload', component: DownloadPhotoComponent },
    { path: 'photo/:id', component: PhotoMarkComponent },
    { path: '', component: HomeComponent },
